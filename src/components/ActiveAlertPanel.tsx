@@ -11,7 +11,10 @@ import {
   ArrowRight, 
   Send,
   Megaphone,
-  Volume2
+  Volume2,
+  DoorOpen,
+  ShieldCheck,
+  MapPin
 } from 'lucide-react';
 import { playRadioSquelch, playCriticalAlarm, playEarlyWarningTone, playUiClick } from '../utils/audio';
 
@@ -152,6 +155,26 @@ export const ActiveAlertPanel: React.FC<ActiveAlertPanelProps> = ({
             <Volume2 className="w-4 h-4 text-cyan-400" />
             <span className="hidden sm:inline">Alarm Siren</span>
           </button>
+        </div>
+      </div>
+
+      {/* Emergency Assets & Chokepoint Stampede Diversion Bar */}
+      <div className="py-2.5 px-3.5 my-3 rounded-xl bg-dark-950/80 border border-slate-700/80 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="text-[10px] uppercase font-bold text-slate-400">Tactical Life-Safety:</span>
+          <span className="flex items-center gap-1.5 text-red-300">
+            <Flame className="w-3.5 h-3.5 text-red-400" />
+            Extinguisher: <strong>{activeAlert.zoneId === 'zone-north-gate' ? '18m (Pillar 4B)' : '14m (North Kiosk)'}</strong>
+          </span>
+          <span className="flex items-center gap-1.5 text-sky-300">
+            <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
+            Security: <strong>{activeAlert.zoneId === 'zone-north-gate' ? '22m (Station Alpha - 4 Stewards)' : '28m (Station Bravo - 6 Stewards)'}</strong>
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1.5 text-amber-300 bg-amber-950/60 px-2.5 py-1 rounded border border-amber-800/60">
+          <DoorOpen className="w-3.5 h-3.5 text-amber-400" />
+          <span>Stampede Diversion: <strong>{activeAlert.zoneId === 'zone-north-gate' ? 'Gate E-3 -> East Lawn (34m)' : 'Gate W-2 -> Ring Road (45m)'}</strong></span>
         </div>
       </div>
 

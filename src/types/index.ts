@@ -7,6 +7,28 @@ export interface Point2D {
   y: number;
 }
 
+export interface EmergencyAsset {
+  id: string;
+  name: string;
+  type: 'FIRE_EXTINGUISHER' | 'SECURITY_POST' | 'MEDICAL_POST' | 'EVAC_CHOKEPOINT';
+  distanceMeters: number;
+  locationDesc: string;
+  status: 'READY' | 'ACTIVE';
+}
+
+export interface ChokePoint {
+  id: string;
+  name: string;
+  zoneId: string;
+  widthMeters: number;
+  maxFlowRatePpm: number; // people per minute
+  reliefRouteName: string;
+  reliefAreaName: string;
+  reliefCapacity: number;
+  distanceMeters: number;
+  status: 'OPEN' | 'CONGESTED' | 'DIVERTING' | 'STAMPEDE_RISK';
+}
+
 export interface HomographyPair {
   imgX: number;
   imgY: number;
@@ -37,6 +59,9 @@ export interface Zone {
   homographyPoints: HomographyPair[];
   isCalibrated: boolean;
   densityModel: 'CSRNet-Dilated-CNN' | 'P2PNet-PointLocalizer';
+  emergencyAssets?: EmergencyAsset[];
+  chokePoints?: ChokePoint[];
+  crowdFlowDirection?: string;
 }
 
 export interface AlertEvent {

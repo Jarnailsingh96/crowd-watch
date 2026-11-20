@@ -73,7 +73,28 @@ const INITIAL_ZONES: Zone[] = [
       { imgX: 0.32, imgY: 0.32, groundX: 0, groundY: 30 }
     ],
     isCalibrated: true,
-    densityModel: 'CSRNet-Dilated-CNN'
+    densityModel: 'CSRNet-Dilated-CNN',
+    crowdFlowDirection: '↗ 74% Ingress migrating towards Central Plaza Chokepoint',
+    emergencyAssets: [
+      { id: 'fe-01', name: 'Fire Extinguisher FE-01', type: 'FIRE_EXTINGUISHER', distanceMeters: 18, locationDesc: 'Pillar 4B (Class ABC Dry Powder)', status: 'READY' },
+      { id: 'sec-01', name: 'Security Post Alpha', type: 'SECURITY_POST', distanceMeters: 22, locationDesc: 'Gate A Kiosk (4 Stewards on Radio Ch 2)', status: 'READY' },
+      { id: 'med-01', name: 'First Aid Tent 1', type: 'MEDICAL_POST', distanceMeters: 35, locationDesc: 'West Ingress Apron', status: 'READY' },
+      { id: 'evac-01', name: 'Relief Gate E-3', type: 'EVAC_CHOKEPOINT', distanceMeters: 34, locationDesc: 'Corridor E-3 -> East Lawn Meadow (120 ppl/min)', status: 'READY' }
+    ],
+    chokePoints: [
+      {
+        id: 'cp-01',
+        name: 'North Turnstile Funnel',
+        zoneId: 'zone-north-gate',
+        widthMeters: 3.2,
+        maxFlowRatePpm: 140,
+        reliefRouteName: 'Corridor E-3',
+        reliefAreaName: 'East Lawn Overflow Meadow',
+        reliefCapacity: 3500,
+        distanceMeters: 34,
+        status: 'CONGESTED'
+      }
+    ]
   },
   {
     id: 'zone-food-court',
@@ -107,7 +128,28 @@ const INITIAL_ZONES: Zone[] = [
       { imgX: 0.28, imgY: 0.38, groundX: 0, groundY: 23 }
     ],
     isCalibrated: true,
-    densityModel: 'CSRNet-Dilated-CNN'
+    densityModel: 'CSRNet-Dilated-CNN',
+    crowdFlowDirection: '→ 60% Dispersing toward Main Stage Bowl',
+    emergencyAssets: [
+      { id: 'fe-02', name: 'Fire Extinguisher FE-02', type: 'FIRE_EXTINGUISHER', distanceMeters: 14, locationDesc: 'North Concessions Kiosk (CO2 & Foam)', status: 'READY' },
+      { id: 'sec-02', name: 'Security Post Bravo', type: 'SECURITY_POST', distanceMeters: 28, locationDesc: 'Plaza Mast Station (6 Stewards on Radio Ch 3)', status: 'READY' },
+      { id: 'med-02', name: 'Rapid Response Cart Med-2', type: 'MEDICAL_POST', distanceMeters: 40, locationDesc: 'Central Plaza Service Lane', status: 'READY' },
+      { id: 'evac-02', name: 'Relief Gate W-2', type: 'EVAC_CHOKEPOINT', distanceMeters: 45, locationDesc: 'Gate W-2 -> Perimeter Ring Road (150 ppl/min)', status: 'READY' }
+    ],
+    chokePoints: [
+      {
+        id: 'cp-02',
+        name: 'Concession Alley Chokepoint',
+        zoneId: 'zone-food-court',
+        widthMeters: 2.8,
+        maxFlowRatePpm: 110,
+        reliefRouteName: 'Perimeter Gate W-2',
+        reliefAreaName: 'Perimeter Ring Road Relief',
+        reliefCapacity: 5000,
+        distanceMeters: 45,
+        status: 'OPEN'
+      }
+    ]
   }
 ];
 

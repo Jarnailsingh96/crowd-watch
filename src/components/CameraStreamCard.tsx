@@ -25,7 +25,12 @@ import {
   CheckCircle2,
   Cpu,
   Sparkles,
-  Sliders
+  Sliders,
+  DoorOpen,
+  MapPin,
+  Radio,
+  ArrowUpRight,
+  ShieldAlert
 } from 'lucide-react';
 import { playUiClick, playEarlyWarningTone } from '../utils/audio';
 import { aiDetectorService, DetectedPerson } from '../services/aiDetector';
@@ -987,6 +992,54 @@ export const CameraStreamCard: React.FC<CameraStreamCardProps> = ({
         )}
       </div>
 
+      {/* LIVE CCTV THRESHOLD CROSSING & CROWD MIGRATION FORECAST BANNER */}
+      <div className={`px-4 py-2.5 border-t border-b flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono transition-all ${
+        zone.status === 'RED'
+          ? 'bg-red-950/70 border-red-700/80 text-red-200'
+          : (zone.status === 'AMBER' && zone.secondsToLimit !== null && zone.secondsToLimit <= 60
+            ? 'bg-amber-950/60 border-amber-600/70 text-amber-200 animate-pulse'
+            : 'bg-dark-950/80 border-slate-800 text-slate-300')
+      }`}>
+        <div className="flex items-center gap-2">
+          {zone.status === 'RED' ? (
+            <Flame className="w-4 h-4 text-red-400 animate-bounce" />
+          ) : (zone.status === 'AMBER' && zone.secondsToLimit !== null && zone.secondsToLimit <= 60 ? (
+            <AlertTriangle className="w-4 h-4 text-amber-400 animate-spin" style={{ animationDuration: '4s' }} />
+          ) : (
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          ))}
+          <div>
+            <div className="font-bold flex items-center gap-1.5 flex-wrap">
+              <span>CCTV THRESHOLD FORECAST:</span>
+              {zone.secondsToLimit !== null && zone.secondsToLimit <= 60 ? (
+                <span className="text-amber-300 font-black">
+                  WILL CROSS THRESHOLD ({zone.limitCount}) IN ~{zone.secondsToLimit}s (+{zone.trendSlope.toFixed(1)}/s)
+                </span>
+              ) : zone.status === 'RED' ? (
+                <span className="text-red-300 font-black">
+                  THRESHOLD BREACHED (+{Math.max(0, zone.currentCount - zone.limitCount)} OVER LIMIT)
+                </span>
+              ) : (
+                <span className="text-emerald-400">
+                  THRESHOLD SAFE (Flow Balanced, No Breach Predicted)
+                </span>
+              )}
+            </div>
+            <div className="text-[10px] text-slate-400 flex items-center gap-1 font-sans mt-0.5">
+              <span className="text-cyan-400 font-mono font-bold">Crowd Flow Vector:</span>
+              <span>{zone.crowdFlowDirection || 'Nominal dispersed circulation across zone area'}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Chokepoint Action Hint */}
+        <div className="flex items-center gap-1.5 text-[11px] self-end sm:self-center">
+          <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-amber-300 font-mono">
+            {zone.id === 'zone-north-gate' ? 'Chokepoint: 3.2m Neck' : 'Chokepoint: 2.8m Alley'}
+          </span>
+        </div>
+      </div>
+
       {/* Vital Metrics Grid (Page 6 Wireframe specs) */}
       <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 bg-dark-900/40 border-t border-slate-800/80">
         {/* Metric 1: Head Count with EDITABLE CAPACITY LIMIT */}
@@ -1116,6 +1169,77 @@ export const CameraStreamCard: React.FC<CameraStreamCardProps> = ({
         </div>
       </div>
 
+      {/* EMERGENCY INFRASTRUCTURE & LIFE-SAFETY ASSETS (Distances to Extinguishers & Security) */}
+      <div className="px-4 py-3 bg-dark-950/80 border-t border-slate-800/80">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center gap-1.5 font-bold">
+            <ShieldAlert className="w-3.5 h-3.5 text-sky-400" />
+            Nearest Emergency Assets & Life-Safety Distances
+          </span>
+          <span className="text-[10px] font-mono text-cyan-400">
+            HSE Crowd Safety Compliance
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
+          {/* Fire Extinguisher */}
+          <div className="p-2 rounded-lg bg-slate-900/70 border border-slate-800 flex items-start gap-2">
+            <Flame className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <div className="text-[10px] text-slate-400 truncate">Fire Extinguisher</div>
+              <div className="font-bold text-red-300">
+                {zone.id === 'zone-north-gate' ? '18 metres' : '14 metres'}
+              </div>
+              <div className="text-[9px] text-slate-500 truncate font-sans">
+                {zone.id === 'zone-north-gate' ? 'Pillar 4B (Class ABC)' : 'North Kiosk (CO2)'}
+              </div>
+            </div>
+          </div>
+
+          {/* Security Checkpoint */}
+          <div className="p-2 rounded-lg bg-slate-900/70 border border-slate-800 flex items-start gap-2">
+            <ShieldCheck className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <div className="text-[10px] text-slate-400 truncate">Security Checkpoint</div>
+              <div className="font-bold text-sky-300">
+                {zone.id === 'zone-north-gate' ? '22 metres' : '28 metres'}
+              </div>
+              <div className="text-[9px] text-slate-500 truncate font-sans">
+                {zone.id === 'zone-north-gate' ? 'Station Alpha (4 Stewards)' : 'Station Bravo (6 Stewards)'}
+              </div>
+            </div>
+          </div>
+
+          {/* Stampede Relief Diversion Chokepoint */}
+          <div className="p-2 rounded-lg bg-slate-900/70 border border-slate-800 flex items-start gap-2">
+            <DoorOpen className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <div className="text-[10px] text-slate-400 truncate">Relief Chokepoint</div>
+              <div className="font-bold text-amber-300">
+                {zone.id === 'zone-north-gate' ? '34 metres' : '45 metres'}
+              </div>
+              <div className="text-[9px] text-slate-500 truncate font-sans">
+                {zone.id === 'zone-north-gate' ? 'Gate E-3 (120 ppl/m)' : 'Gate W-2 (150 ppl/m)'}
+              </div>
+            </div>
+          </div>
+
+          {/* Safe Overflow Area */}
+          <div className="p-2 rounded-lg bg-slate-900/70 border border-slate-800 flex items-start gap-2">
+            <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <div className="text-[10px] text-slate-400 truncate">Safe Relief Area</div>
+              <div className="font-bold text-emerald-300">
+                {zone.id === 'zone-north-gate' ? 'East Lawn' : 'Ring Road'}
+              </div>
+              <div className="text-[9px] text-slate-500 truncate font-sans">
+                {zone.id === 'zone-north-gate' ? 'Cap: 3,500 ppl' : 'Cap: 5,000 ppl'}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Action Bar (Live Testing Controls) */}
       <div className="p-3 bg-dark-950/70 border-t border-slate-800/60 flex flex-wrap items-center justify-between gap-2 text-xs">
         <div className="flex flex-wrap items-center gap-1.5">
@@ -1143,6 +1267,19 @@ export const CameraStreamCard: React.FC<CameraStreamCardProps> = ({
           >
             <TrendingDown className="w-3.5 h-3.5" />
             <span>Disperse (-25)</span>
+          </button>
+
+          {/* Stampede Relief Emergency Diversion (-40) */}
+          <button
+            onClick={() => {
+              playEarlyWarningTone();
+              onUpdateCount(zone.id, -40);
+            }}
+            className="px-2.5 py-1.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 flex items-center gap-1.5 transition font-medium"
+            title="Trigger emergency stampede diversion to relief area (-40)"
+          >
+            <DoorOpen className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Divert to Relief Area (-40)</span>
           </button>
 
           {/* Reset to Normal Safe Baseline */}
